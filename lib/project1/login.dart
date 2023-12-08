@@ -1,5 +1,6 @@
 import 'package:blood_donation_app/project1/home.dart';
 import 'package:flutter/material.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 class LoginScreen extends StatefulWidget {
   @override
@@ -17,65 +18,64 @@ class _LoginScreenState extends State<LoginScreen> {
     return Scaffold(
       backgroundColor: Colors.white,
       appBar: AppBar(
-        toolbarHeight: 150,
-        backgroundColor: Colors.black,
+        elevation: 0,
+        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(20)),
+        toolbarHeight: MediaQuery.of(context).size.height * 0.35,
+        backgroundColor: Colors.red,
         title: const Text(
-          "-Bloody",
-          style: TextStyle(fontWeight: FontWeight.bold, fontSize: 40),
+          "- Sign In",
+          style: TextStyle(fontWeight: FontWeight.w900, fontSize: 40),
         ),
-        centerTitle: true,
       ),
       body: SingleChildScrollView(
         child: Padding(
-          padding: EdgeInsets.symmetric(horizontal: 20, vertical: 50),
+          padding: const EdgeInsets.symmetric(horizontal: 30, vertical: 100),
           child: Form(
             key: _formfield,
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.center,
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
-                Image.asset(
-                  "assets/images/login.jpg",
-                  height: 150,
-                  width: 150,
-                ),
                 TextFormField(
+                  cursorColor: Colors.red,
                   keyboardType: TextInputType.emailAddress,
                   controller: emailController,
                   decoration: InputDecoration(
-                    labelText: "Username",
-                    labelStyle: TextStyle(
-                      fontWeight: FontWeight.bold,
-                      fontSize: 18,
-                    ),
-                    border: OutlineInputBorder(),
-                    prefixIcon: Icon(Icons.mail),
+                    hintText: 'Email',
+                    hintStyle: const TextStyle(
+                        fontWeight: FontWeight.w600,
+                        fontSize: 14,
+                        color: Colors.grey),
+                    border:
+                    OutlineInputBorder(borderRadius: BorderRadius.circular(12)),
+                    prefixIcon: const Icon(Icons.mail, color: Colors.black,),
                   ),
                   validator: (value) {
-                    bool emailValid = RegExp(
-                            r"^[a-zA-Z0-9.!#$%&'*+-/=?^_`{|}~]+@[a-zA-Z0-9]+\.[a-zA-Z]+")
-                        .hasMatch(value!);
-
-                    if (value.isEmpty) {
+                    if (value!.isEmpty) {
                       return "Enter Email";
-                    } else if (!emailValid) {
+                    } else if (!RegExp(
+                        r"^[a-zA-Z0-9.!#$%&'*+-/=?^_`{|}~]+@[a-zA-Z0-9]+\.[a-zA-Z]+")
+                        .hasMatch(value)) {
                       return "Enter Valid Email";
                     }
+                    return null;
                   },
                 ),
-                SizedBox(height: 20),
+                const SizedBox(height: 25),
                 TextFormField(
-                  keyboardType: TextInputType.emailAddress,
+                  cursorColor: Colors.red,
+                  keyboardType: TextInputType.text,
                   controller: passController,
                   obscureText: passToggle,
                   decoration: InputDecoration(
-                    labelText: "Password",
-                    labelStyle: TextStyle(
-                      fontWeight: FontWeight.bold,
-                      fontSize: 18,
-                    ),
-                    border: OutlineInputBorder(),
-                    prefixIcon: Icon(Icons.lock),
+                    hintText: 'Password',
+                    hintStyle: const TextStyle(
+                        fontWeight: FontWeight.w600,
+                        fontSize: 14,
+                        color: Colors.grey),
+                    border:
+                    OutlineInputBorder(borderRadius: BorderRadius.circular(12)),
+                    prefixIcon: const Icon(Icons.lock, color: Colors.black,),
                     suffixIcon: InkWell(
                       onTap: () {
                         setState(() {
@@ -89,42 +89,56 @@ class _LoginScreenState extends State<LoginScreen> {
                   validator: (value) {
                     if (value!.isEmpty) {
                       return "Enter Password";
-                    } else if (passController.text.length < 6) {
-                      return "Password Length Should be more than 6 characters";
+                    } else if (value.length < 8) {
+                      return "Password Length Should be at least 8 characters";
                     }
+                    return null;
                   },
                 ),
-                SizedBox(height: 100),
+                SizedBox(height: 50),
                 InkWell(
-                  onTap: () {
+                  onTap: () async {
                     if (_formfield.currentState!.validate()) {
                       print("Data Added Successfully");
-                      emailController.clear();
-                      passController.clear();
 
-                      Navigator.push(context,
-                          MaterialPageRoute(builder: (context) => HomePage()));
+                      // Check for fixed email and password
+                      if (emailController.text == "user@gmail.com" &&
+                          passController.text == "12345678") {
+                        // Save login status
+                        SharedPreferences prefs = await SharedPreferences.getInstance();
+                        prefs.setBool('isLoggedIn', true);
+
+                        // Navigate to home page if credentials are correct
+                        Navigator.pushReplacement(
+                          context,
+                          MaterialPageRoute(builder: (context) => HomePage()),
+                        );
+                      } else {
+                        // Show an error message or handle invalid credentials
+                        print("Invalid email or password");
+                      }
                     }
                   },
                   child: Container(
+                    margin: const EdgeInsets.symmetric(horizontal: 30),
                     height: 50,
                     decoration: BoxDecoration(
                       color: Colors.red,
-                      borderRadius: BorderRadius.circular(5),
+                      borderRadius: BorderRadius.circular(8),
                     ),
-                    child: Center(
+                    child: const Center(
                       child: Text(
                         "Log In",
                         style: TextStyle(
                           color: Colors.white,
-                          fontSize: 20,
-                          fontWeight: FontWeight.bold,
+                          fontSize: 15,
+                          fontWeight: FontWeight.w900,
                         ),
                       ),
                     ),
                   ),
                 ),
-                SizedBox(height: 20),
+                const SizedBox(height: 25),
               ],
             ),
           ),
@@ -133,3 +147,4 @@ class _LoginScreenState extends State<LoginScreen> {
     );
   }
 }
+
