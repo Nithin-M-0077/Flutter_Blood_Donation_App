@@ -36,17 +36,17 @@ class _SplashScreenState extends State<SplashScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: Colors.white,
+      backgroundColor: Colors.red,
       body: Center(
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: <Widget>[
             Text(
-              'Blood Donors App',
+              'Blood Donors\nDatabase App',
               style: TextStyle(
-                color: Colors.red,
+                color: Colors.white,
                 fontSize: 30.0,
-                fontWeight: FontWeight.bold,
+                fontWeight: FontWeight.w900,
               ),
             ),
           ],

@@ -21,6 +21,10 @@ class _HomePageState extends State<HomePage> {
     return Scaffold(
       backgroundColor: Colors.white,
       appBar: AppBar(
+        title: Text(
+          "- Blood Donor's \n   Database",
+          style: TextStyle(fontWeight: FontWeight.w900, fontSize: 30),
+        ),
         elevation: 0,
         toolbarHeight: MediaQuery.of(context).size.height * 0.25,
         shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(20)),
